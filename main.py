@@ -67,7 +67,6 @@ class Combat:
         print(self.nom_du_vainqueur())
         print(self.nom_pokemons())
 
-# Exemple d'utilisation
 pokemon_attaquant = Pokemon(1, "Bulbizarre", 1, 45, 49, 49, "Plante", 0)
 pokemon_defenseur = Pokemon(2, "Salamèche", 1, 39, 52, 43, "Feu", 0)
 
