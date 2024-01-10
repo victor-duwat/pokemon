@@ -1,8 +1,8 @@
 import pygame
 
 COULEUR_FOND = (255, 255, 255)
-LARGEUR = 640
-HAUTEUR = 480
+LARGEUR = 800
+HAUTEUR = 600
 
 pygame.init()
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
@@ -11,19 +11,19 @@ pygame.display.set_caption("Pokemon")
 fond = pygame.image.load("bg_menu1.jpg")
 fond = pygame.transform.scale(fond, (LARGEUR, HAUTEUR))
 
-fenetre.blit(fond, (0, 0))  # Draw the background first
+fenetre.blit(fond, (0, 0)) 
 
 logo = pygame.image.load("logo_pokemon.png").convert_alpha()
 
 petit_logo = pygame.transform.scale(logo, (logo.get_width() // 2, logo.get_height() // 2))
 petit_logo = petit_logo.convert_alpha()
-fenetre.blit(petit_logo, (147, 5))
+fenetre.blit(petit_logo, (213, 15))
 
 image_sacha = pygame.image.load("sacha_pikachu.png").convert_alpha()
 
 petite_image_sacha = pygame.transform.scale(image_sacha, (image_sacha.get_width() // 3, image_sacha.get_height() // 3))
 petite_image_sacha = petite_image_sacha.convert_alpha()
-fenetre.blit(petite_image_sacha, (225, 350))
+fenetre.blit(petite_image_sacha, (300, 450))
 
 
 bouton_couleur = (252, 210, 28)  
