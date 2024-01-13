@@ -49,6 +49,10 @@ class Combat:
         print(self.nom_pokemons())
 
         print(self.nom_du_vainqueur())
+        
+
+
+ 
 
 
 
