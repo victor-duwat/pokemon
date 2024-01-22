@@ -1,18 +1,19 @@
 class Combat:
     def __init__(self, joueur, ennemi):
-        self.joueur = joueur
+        self.pokemon = joueur
         self.ennemi = ennemi
         self.pokedex = []
 
     def nom_du_vainqueur(self):
         self.enregistrer_dans_pokedex(self.ennemi.type)
-        if self.joueur.get_en_vie():
-            return f"{self.joueur.nom} est le vainqueur !"
+        if self.pokemon.get_en_vie():
+            return f"{self.pokemon.nom} est le vainqueur !"
         else:
             return f"{self.ennemi.nom} est le vainqueur !"
+        
 
     def nom_pokemons(self):
-        return f"Le Pokémon joueur est {self.joueur.nom} de type {self.joueur.type}, et le Pokémon défenseur est {self.ennemi.nom} de type {self.ennemi.type}."
+        return f"Le Pokémon joueur est {self.pokemon.nom} de type {self.pokemon.type}, et le Pokémon défenseur est {self.ennemi.nom} de type {self.ennemi.type}."
 
     def enregistrer_dans_pokedex(self, nom):
         if nom not in self.pokedex:
@@ -39,22 +40,15 @@ class Combat:
         }
         if type_attaquant in multiplicateur_type and type_defenseur in multiplicateur_type[type_attaquant]:
             multiplier = multiplicateur_type[type_attaquant][type_defenseur]
-            degats = int((2 * attaquant.niv / 5 + 2) * attaquant.att * multiplier / defenseur.defense)
-            return degats
+            degats = int((2 * attaquant.niv / 5 + 2) * attaquant.att * multiplier / defenseur.défense)
+            return max(degats, 1)  # Retourne soit les dégâts calculés, soit 1 si les dégâts sont égaux à zéro
         else:
-            return 0
+            # Si les types ne sont pas pris en compte, retourner les dégâts en fonction de la défense du défenseur
+            degats = int((2 * attaquant.niv / 5 + 2) * attaquant.att / defenseur.défense)
+            return max(degats, 1)  # Retourne soit les dégâts calculés, soit 1 si les dégâts sont égaux à zéro
 
 
     def combattre_jusqua_fin(self):
         print(self.nom_pokemons())
 
         print(self.nom_du_vainqueur())
-        
-
-
- 
-
-
-
-
-

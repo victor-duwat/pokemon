@@ -1,169 +1,78 @@
-import pygame
-import sys
 import random
-from pygame.locals import QUIT, MOUSEBUTTONDOWN
-from pokedex import Pokemon
-from combat import Combat
-from starter import SelectionStarter
-class CombatGraphique:
-    def __init__(self, joueur, ennemi):
-        self.combat = Combat(joueur, ennemi)
-        self.pokemon_joueur = joueur
-        self.pokemon_ennemi = ennemi
+class Pokemon:
 
-        # Initialisation de Pygame
-        pygame.init()
+    def __init__(self,num,nom,niv,pv,att,défense,type,évol,image=None):
+        self.num = num
+        self.nom = nom
+        self.pv = pv
+        self.niv = niv
+        self.att = att 
+        self.défense = défense
+        self.type = type
+        self.évol = évol
+        self.pv_max = pv
 
-        # Définir la taille de la fenêtre
-        self.largeur, self.hauteur = 800, 400
-        self.taille_fenetre = (self.largeur, self.hauteur)
+    def __str__(self):
+        return self.nom
 
-        # Créer la fenêtre
-        self.fenetre = pygame.display.set_mode(self.taille_fenetre)
-        pygame.display.set_caption("Combat Pokémon")
+    def afficher_details(self):
+        print("votre pokémon est:",self.nom)
+        print("il est de type",self.type,"et à un niveau de:",self.niv)
 
-        # Charger l'image du fond
-        self.fond = pygame.image.load("fondcombat.png").convert()
-
-        # Définir la position et la taille de la barre de vie
-        self.barre_vie_rect_ennemi = pygame.Rect(100, 60, 200, 20)
-        self.barre_vie_rect_joueur = pygame.Rect(500, 290, 200, 20)
-
-        # Couleurs
-        self.blanc = (255, 255, 255)
-        self.vert = (50, 205, 50)
-        self.jaune = (255, 215, 0)
-        self.orange = (255, 140, 0)
-        self.rouge = (255, 0, 0)
-
-        # Police de caractères
-        self.police = pygame.font.Font('pokemon.ttf', 17)
-
-        self.tour = 0
-
-
-    def afficher_interface(self):
-        # Créer la fenêtre
-        self.fenetre = pygame.display.set_mode(self.taille_fenetre)
-        pygame.display.set_caption("Combat Pokémon")
-        
-        # Charger l'image du fond
-        self.fond = pygame.image.load("fondcombat.png").convert()
-
-        # Initialiser les images des Pokémon après la création de la fenêtre
-        self.images_pokemons = self.charger_images_pokemons()
-
-        while True:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == MOUSEBUTTONDOWN:
-                    self.jouer_tour()
-
-            self.fenetre.blit(self.fond, (0, 0))
-            self.afficher_barres_vie()
-            self.afficher_noms_pokemon()
-            self.afficher_pvs()
-            self.afficher_images_pokemons()
-
-            pygame.display.flip()
-
-    def fin_tour(self):
-        # Importez la fonction run_jeu depuis pnj
-        from pnj import Jeu
-        jeu_instance = Jeu(starter_choisi=self.pokemon_joueur)
-        jeu_instance.run()
-
-    def jouer_tour(self):
-        chance_echec = random.randint(1, 10)
-
-        if self.tour == 0:
-            if chance_echec == 1:
-                print(f"{self.pokemon_joueur.nom} a raté son attaque.")
-            else:
-                degats_joueur = self.combat.calculer_degats(self.pokemon_joueur, self.pokemon_ennemi)
-                self.pokemon_ennemi.pv = max(0, self.pokemon_ennemi.pv - degats_joueur)
-                print(f"{self.pokemon_joueur.nom} inflige {degats_joueur} points de dégâts à {self.pokemon_ennemi.nom}.")
-                print(f"{self.pokemon_ennemi.nom} a maintenant {self.pokemon_ennemi.pv} points de vie.")
-
-        elif self.tour == 1:
-            if chance_echec == 1:
-                print(f"{self.pokemon_ennemi.nom} a raté son attaque.")
-            else:
-                degats_ennemi = self.combat.calculer_degats(self.pokemon_ennemi, self.pokemon_joueur)
-                self.pokemon_joueur.pv = max(0, self.pokemon_joueur.pv - degats_ennemi)
-                print(f"{self.pokemon_ennemi.nom} inflige {degats_ennemi} points de dégâts à {self.pokemon_joueur.nom}.")
-                print(f"{self.pokemon_joueur.nom} a maintenant {self.pokemon_joueur.pv} points de vie.")
-
-        if not self.pokemon_joueur.get_en_vie():
-            print(f"{self.pokemon_joueur.nom} est KO.")
-            self.fin_tour()
-
-        elif not self.pokemon_ennemi.get_en_vie():
-            print(f"{self.pokemon_ennemi.nom} est KO.")
-            self.fin_tour()
-
-        else:
-            self.tour = 1 - self.tour  # Changer de tour entre 0 et 1
-
-    def afficher_barres_vie(self):
-        pourcentage_vie_joueur = self.pokemon_joueur.pv / self.pokemon_joueur.pv_max
-        pourcentage_vie_ennemi = self.pokemon_ennemi.pv / self.pokemon_ennemi.pv_max
-
-        self.afficher_barre_vie(self.barre_vie_rect_joueur, pourcentage_vie_joueur, self.pokemon_joueur, (self.vert, self.jaune, self.orange, self.rouge))
-        self.afficher_barre_vie(self.barre_vie_rect_ennemi, pourcentage_vie_ennemi, self.pokemon_ennemi, (self.vert, self.jaune, self.orange, self.rouge))
-
-    def afficher_barre_vie(self, rect, pourcentage, pokemon, couleurs):
-        couleur_barre = self.blanc
-
-        if pourcentage >= 0.75:
-            couleur_barre = couleurs[0]
-           
-        elif 0.3 <= pourcentage < 0.75:
-            couleur_barre = couleurs[1]
-            
-        elif 0.15 <= pourcentage < 0.3:
-            couleur_barre = couleurs[2]
-           
-        else:
-            couleur_barre = couleurs[3]      
-        pygame.draw.rect(self.fenetre, self.blanc, rect)
-        pygame.draw.rect(self.fenetre, couleur_barre, (rect.x, rect.y, pourcentage * rect.width, rect.height))
-
-    def afficher_noms_pokemon(self):
-        nom_pokemon_joueur = self.police.render(self.pokemon_joueur.nom, True, self.blanc)
-        self.fenetre.blit(nom_pokemon_joueur, (self.barre_vie_rect_joueur.x, self.barre_vie_rect_joueur.y - 30))
-
-        nom_pokemon_ennemi = self.police.render(self.pokemon_ennemi.nom, True, self.blanc)
-        self.fenetre.blit(nom_pokemon_ennemi, (self.barre_vie_rect_ennemi.x, self.barre_vie_rect_ennemi.y - 30))
-
-    def afficher_pvs(self):
-        pv_pokemon_joueur = self.police.render(f"{self.pokemon_joueur.pv}/{self.pokemon_joueur.pv_max}", True, self.blanc)
-        self.fenetre.blit(pv_pokemon_joueur, (self.barre_vie_rect_joueur.x + self.barre_vie_rect_joueur.width + 10, self.barre_vie_rect_joueur.y))
-
-        pv_pokemon_ennemi = self.police.render(f"{self.pokemon_ennemi.pv}/{self.pokemon_ennemi.pv_max}", True, self.blanc)
-        self.fenetre.blit(pv_pokemon_ennemi, (self.barre_vie_rect_ennemi.x + self.barre_vie_rect_ennemi.width + 10, self.barre_vie_rect_ennemi.y))
-
-    def charger_images_pokemons(self):
-        images_pokemons = {}
-        for pokemon in liste_151_pokemons:
-            image_nom_fichier = f"images_pokemon/{pokemon.nom.lower()}.png"
-            images_pokemons[pokemon.nom] = pygame.image.load(image_nom_fichier).convert_alpha()
-        return images_pokemons
+    def get_en_vie(self):
+        return self.pv > 0
     
-    def afficher_images_pokemons(self):
-        image_joueur = self.images_pokemons[self.pokemon_joueur.nom]
-        image_ennemi = self.images_pokemons[self.pokemon_ennemi.nom]
+    def set_full_life(self):
+        self.pv_max = self.pv_max
 
-        # Position des images à ajuster en fonction de votre mise en page
-        position_image_joueur = (100, 150)
-        position_image_ennemi = (500, 10)
+class Pokedex:
+    liste_starter = [
+        Pokemon(4, "Salamèche", 1, 39, 502, 43, "Feu", 1),
+        Pokemon(1, "Bulbizarre", 1, 45, 49, 49, "Plante", 1),
+        Pokemon(7, "Carapuce", 1, 44, 48, 65, "Eau", 1),
+    ]
 
-        self.fenetre.blit(image_joueur, position_image_joueur)
-        self.fenetre.blit(image_ennemi, position_image_ennemi)
-            
-liste_151_pokemons = [
+    def __init__(self):
+        self.pokemons = []
+        self.équipe_pokemon = []
+
+    def ajouter_pokemon(self,pokemon):
+        self.pokemons.append(pokemon)
+
+    def ajouter_plusieurs_pokemons(self, liste_pokemons):
+        self.pokemons.extend(liste_pokemons)
+
+    def afficher_pokedex(self):
+        for pokemon in self.pokemons:
+            pokemon.afficher_details()
+
+
+    def afficher_équipe(self):
+        print("votre équipe est composé de:",self.équipe_pokemon)
+
+    def choisir_starter(self):
+        print("Choisissez un Pokémon:")
+        for i, starter in enumerate(self.liste_starter, start=1):
+            print(f"{i}. {starter.nom}")
+
+        choix_utilisateur = input("Entrez le numéro du Pokémon choisi: ")
+
+        try:
+            index_choisi = int(choix_utilisateur) - 1
+            pokemon_choisi = self.liste_starter[index_choisi]
+        except (ValueError, IndexError):
+            print("Choix invalide. Veuillez choisir un numéro de 1 à 3.")
+            return self.choisir_starter()
+
+        print(f"Vous avez choisi {pokemon_choisi.nom}")
+        self.équipe_pokemon.append(pokemon_choisi)
+        return pokemon_choisi
+
+
+pokedex = Pokedex()
+
+def pokemon_aleatoire():
+    liste_151_pokemons = [
         Pokemon(1,"Bulbizarre",1,45,49,49,"Plante",1),
         Pokemon(2,"Herbizarre",1,60,62,63,"Plante",2),
         Pokemon(3,"Florizarre",1,80,82,83,"Plante",3),
@@ -316,19 +225,10 @@ liste_151_pokemons = [
         Pokemon(150,"Mewtwo",1,150,150,150,"Psy",1),
         Pokemon(151,"Mew",1,100,100,100,"Psy",1)
         ]
+    pokemon_choisi=random.choice(liste_151_pokemons)
+    return pokemon_choisi
 
-if __name__ == "__main__":
-    pokemon_ennemi = Pokemon(1, "Bulbizarre", 1, 45, 49, 49, "Plante", 0)
-    pokemons_disponibles = [
-    Pokemon(4, "Salamèche", 1, 39, 52, 43, "Feu", 0),
-    Pokemon(1, "Bulbizarre", 1, 45, 49, 49, "Plante", 0),
-    ]
+
+liste_equipe =[
     
-    pokemon_joueur = pokemons_disponibles[0]
-    pokemon_ennemi=random.choice(liste_151_pokemons)
-
-    combat_graphique = CombatGraphique(pokemon_joueur, pokemon_ennemi)
-    combat_graphique.afficher_interface()
-
-    
-
+]
