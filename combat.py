@@ -5,20 +5,14 @@ class Combat:
         self.pokedex = []
 
     def nom_du_vainqueur(self):
-        self.enregistrer_dans_pokedex(self.ennemi.type)
         if self.pokemon.get_en_vie():
             return f"{self.pokemon.nom} est le vainqueur !"
         else:
             return f"{self.ennemi.nom} est le vainqueur !"
-        
+       
 
     def nom_pokemons(self):
         return f"Le Pokémon joueur est {self.pokemon.nom} de type {self.pokemon.type}, et le Pokémon défenseur est {self.ennemi.nom} de type {self.ennemi.type}."
-
-    def enregistrer_dans_pokedex(self, nom):
-        if nom not in self.pokedex:
-            self.pokedex.append(nom)
-            print(f"{self.ennemi.nom} a été enregistré dans le Pokédex.")
 
     def calculer_degats(self, attaquant, defenseur):
         type_attaquant = attaquant.type
@@ -51,4 +45,3 @@ class Combat:
     def combattre_jusqua_fin(self):
         print(self.nom_pokemons())
 
-        print(self.nom_du_vainqueur())

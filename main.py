@@ -1,13 +1,10 @@
 import pygame
 from pnj import Jeu
-from pokedex import Pokedex
 from starter import SelectionStarter
-import random
 import sys
 import pygame_gui
 
 choix = SelectionStarter()
-
 
 COULEUR_FOND = (255, 255, 255)
 LARGEUR = 800
@@ -49,7 +46,6 @@ font = pygame.font.Font('pokemon.ttf', 36)
 texte = font.render("Jouer", True, (1, 49, 180))
 texte_rect = texte.get_rect(center=bouton_rect.center)
 fenetre.blit(texte, texte_rect)
-
 
 continuer = True
 while continuer:

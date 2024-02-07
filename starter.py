@@ -41,7 +41,7 @@ class SelectionStarter:
         self.ecran.blit(self.image_carapuce, rect_carapuce)
         texte_carapuce = self.police.render("Carapuce", True, (0, 0, 0))
         self.ecran.blit(texte_carapuce, (rect_carapuce.centerx - texte_carapuce.get_width() // 2, 300))
-        self.boutons_starters.append((rect_carapuce, self.pokedex.liste_starter[2]))  # Ajout du bouton
+        self.boutons_starters.append((rect_carapuce, self.pokedex.liste_starter[6]))  # Ajout du bouton
 
         # Salamèche
         rect_salamèche = pygame.Rect(250, 125, largeur_bouton, hauteur_bouton)
@@ -49,7 +49,7 @@ class SelectionStarter:
         self.ecran.blit(self.image_salamèche, rect_salamèche)
         texte_salamèche = self.police.render("Salamèche", True, (0, 0, 0))
         self.ecran.blit(texte_salamèche, (rect_salamèche.centerx - texte_salamèche.get_width() // 2, 300))
-        self.boutons_starters.append((rect_salamèche, self.pokedex.liste_starter[0]))  # Ajout du bouton
+        self.boutons_starters.append((rect_salamèche, self.pokedex.liste_starter[3]))  # Ajout du bouton
 
         # Bulbizarre
         rect_bulbizarre = pygame.Rect(450, 125, largeur_bouton, hauteur_bouton)
@@ -57,7 +57,7 @@ class SelectionStarter:
         self.ecran.blit(self.image_bulbizarre, rect_bulbizarre)
         texte_bulbizarre = self.police.render("Bulbizarre", True, (0, 0, 0))
         self.ecran.blit(texte_bulbizarre, (rect_bulbizarre.centerx - texte_bulbizarre.get_width() // 2, 300))
-        self.boutons_starters.append((rect_bulbizarre, self.pokedex.liste_starter[1]))  # Ajout du bouton
+        self.boutons_starters.append((rect_bulbizarre, self.pokedex.liste_starter[0]))  # Ajout du bouton
 
     def choisir_arriere_plan(self):
         chemin_arriere_plan = input("Entrez le chemin de l'image de fond : ")

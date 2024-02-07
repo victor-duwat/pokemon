@@ -2,11 +2,11 @@ import pygame
 import sys
 import random
 import pygame_gui
-from pokedex import Pokemon, Pokedex
-from pokedex import pokemon_aleatoire
+from pokedex import Pokemon
 from combat import Combat
 from pygame_combat import CombatGraphique
 from starter import SelectionStarter
+import json
 
 class Jeu:
     def __init__(self, starter_choisi):
@@ -80,7 +80,17 @@ class Jeu:
         self.deplacements = 0
         self.seuil_deplacements = random.randint(1,10)
         self.pokemon_joueur = starter_choisi
-        self.pokemon_ennemi = pokemon_aleatoire()
+
+        # Chargez les données depuis le fichier JSON
+        with open('pokemons.json', 'r') as file:
+            data = json.load(file)
+
+        # Utilisez les données pour créer la liste de Pokémon
+        liste_151_pokemons = [
+            Pokemon(p["num"], p["nom"], p["niv"], p["pv"], p["att"], p["défense"], p["type"], p["évol"])
+            for p in data
+        ]
+        self.pokemon_ennemi=random.choice(liste_151_pokemons)
 
 
 
@@ -114,7 +124,7 @@ class Jeu:
                 self.texte_dialogue2.html_text = 'Votre équipe :\n'
 
                 if self.starter_choisi:
-                    self.texte_dialogue2.html_text += f'{self.starter_choisi.nom}\n'
+                    self.texte_dialogue2.html_text += f'{self.pokemon_joueur.nom}\n'
 
                 self.texte_dialogue2.rebuild()
                 self.espace_relache = False
@@ -134,7 +144,7 @@ class Jeu:
             # Affiche le fond une seule fois
             self.fenetre.blit(self.fond, (0, 0))
 
-            # Affiche le personnage et le joueur
+            # Affiche le pnj et le joueur
             self.afficher_pnj()
             self.afficher_joueur()
 
@@ -198,10 +208,6 @@ class Jeu:
             self.combattant()
             combat_graphique = CombatGraphique(self.pokemon_joueur, self.pokemon_ennemi)
             combat_graphique.afficher_interface()
-
-    
-
-
 
 
     def combattant(self):
