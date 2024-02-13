@@ -1,6 +1,6 @@
 import pygame
 import sys
-from pokedex import Pokedex, Pokemon
+from pokedex import Pokedex
 
 class SelectionStarter:
     def __init__(self):

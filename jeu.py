@@ -92,8 +92,72 @@ class Jeu:
         ]
         self.pokemon_ennemi=random.choice(liste_151_pokemons)
 
+        # Création du bouton pour ouvrir le Pokédex
+        self.btn_pokedex = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((580, 10), (100, 50)),
+            text='Pokédex',
+            manager=self.manager
+        )
+        
+        # Définir la fonction à exécuter lorsque le bouton est cliqué
+        self.btn_pokedex.when_clicked = self.ouvrir_pokedex
 
+        # Création du bouton de retour
+        self.btn_retour = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((690, 10), (100, 50)),
+            text='Retour',
+            manager=self.manager
+        )
+        self.btn_retour.when_clicked = self.retour_jeu
 
+    def ouvrir_pokedex(self):
+    # Charger les données depuis le fichier JSON "pokedex.json"
+        with open('pokedex.json', 'r') as file:
+            data = json.load(file)
+
+        # Paramètres de la fenêtre
+        largeur, hauteur = 800, 600
+        blanc = (255, 255, 255)
+
+        fenetre_pokedex = pygame.display.set_mode((largeur, hauteur))
+        pygame.display.set_caption("Pokédex")
+
+        police = pygame.font.SysFont(None, 30)
+
+        # Boucle principale de la fenêtre du Pokédex
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                        if event.ui_element == self.btn_retour:
+                            running = False
+                    
+
+                # Gérer les événements de la bibliothèque pygame_gui
+                self.manager.process_events(event)
+
+            # Affichage des détails des Pokémon
+            fenetre_pokedex.fill(blanc)
+            y = 50
+            for pokemon_data in data:
+                nom = pokemon_data["nom"]
+                num = pokemon_data["num"]
+                texte = f"{num}: {nom}"
+                texte_surface = police.render(texte, True, (0, 0, 0))
+                fenetre_pokedex.blit(texte_surface, (50, y))
+                y += 30
+
+            # Mettre à jour et dessiner l'interface utilisateur du Pokédex
+            self.manager.update(self.clock.tick(60) / 1000.0)
+            self.manager.draw_ui(fenetre_pokedex)
+
+            # Rafraîchir l'affichage de la fenêtre du Pokédex
+            pygame.display.flip()
+        
     def run(self):
         while True:
             for event in pygame.event.get():
@@ -106,9 +170,19 @@ class Jeu:
                 if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                     self.espace_relache = True
 
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                        if event.ui_element == self.btn_pokedex:
+                            self.ouvrir_pokedex()
+                
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                        if event.ui_element == self.btn_retour:
+                            self.retour_jeu()               
+
             self.gerer_input()
 
-            # Vérifiez la collision entre le joueur et le personnage
+            # Vérifie la collision entre le joueur et le personnage
             collision = self.position_joueur.colliderect(self.position_personnage)
 
             if collision and not self.dialogue_window1.visible and self.espace_relache:
@@ -123,6 +197,8 @@ class Jeu:
                 self.texte_dialogue2.html_text = 'Votre équipe :\n'
 
                 if self.starter_choisi:
+                    self.texte_dialogue2.html_text += f'{self.pokemon_joueur.nom}\n'
+                else :
                     self.texte_dialogue2.html_text += f'{self.pokemon_joueur.nom}\n'
 
                 self.texte_dialogue2.rebuild()
@@ -151,6 +227,8 @@ class Jeu:
             self.manager.draw_ui(self.fenetre)
             pygame.display.flip()
 
+    def retour_jeu(self):
+        pygame.quit()
 
     def gerer_input(self):
         touches = pygame.key.get_pressed()
@@ -173,9 +251,7 @@ class Jeu:
 
         if self.est_dans_zone_combat():
             if not self.en_combat and self.deplacements == self.seuil_deplacements:
-                self.lancer_combat()
-
-        
+                self.lancer_combat()      
 
     def ajuster_position_joueur(self):
         # Empêchez le joueur de traverser le personnage
@@ -207,7 +283,6 @@ class Jeu:
             self.combattant()
             combat_graphique = CombatGraphique(self.pokemon_joueur, self.pokemon_ennemi)
             combat_graphique.afficher_interface()
-
 
     def combattant(self):
             combat = Combat(joueur=self.pokemon_joueur, ennemi=self.pokemon_ennemi)

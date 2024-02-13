@@ -1,4 +1,3 @@
-import random
 import json
 from pokemon import Pokemon
 
@@ -40,12 +39,6 @@ class Pokedex:
             
         else:
             print(f"{pokemon.nom} est déjà dans le Pokédex.")
-
-
-    def afficher_pokedex(self):
-        for pokemon in self.pokemons:
-            pokemon.afficher_details()
-
 
     def choisir_starter(self):
         print("Choisissez un Pokémon:")

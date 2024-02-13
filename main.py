@@ -1,8 +1,7 @@
 import pygame
-from pnj import Jeu
+from jeu import Jeu
 from starter import SelectionStarter
-import sys
-import pygame_gui
+
 
 choix = SelectionStarter()
 

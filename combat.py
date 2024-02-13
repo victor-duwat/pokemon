@@ -1,7 +1,6 @@
 import random
 import json
 import pygame
-from pokedex import Pokedex
 from pokemon import Pokemon
 
 class Combat:
@@ -73,13 +72,11 @@ class Combat:
                 self.message_pv_surface = self.police.render(f"{self.pokemon_joueur.nom} a maintenant {self.pokemon_joueur.pv} points de vie.", True, self.blanc)
 
         if not self.pokemon_joueur.get_en_vie():
-            print(f"{self.pokemon_joueur.nom} est KO.")
-            Pokedex.ajouter_au_pokedex(self.pokemon_ennemi)          
+            print(f"{self.pokemon_joueur.nom} est KO.")        
             self.fin_tour()
 
         elif not self.pokemon_ennemi.get_en_vie():
-            print(f"{self.pokemon_ennemi.nom} est KO.")
-            Pokedex.ajouter_au_pokedex(self.pokemon_ennemi)
+            print(f"{self.pokemon_ennemi.nom} est KO.")          
             self.pokemon_joueur.niv += 1
             if self.pokemon_joueur.niv == 3:
                 self.pokemon_joueur.évol += 1
@@ -92,7 +89,7 @@ class Combat:
 
 
     def fin_tour(self):
-            from pnj import Jeu
+            from jeu import Jeu
             jeu_instance = Jeu(starter_choisi=self.pokemon_joueur)
             jeu_instance.run()
 

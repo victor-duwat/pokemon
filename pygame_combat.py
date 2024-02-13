@@ -10,6 +10,7 @@ from pokedex import Pokedex
 
 class CombatGraphique:
     def __init__(self, joueur, ennemi):
+        Pokedex.ajouter_au_pokedex(ennemi)
         self.combat = Combat(joueur, ennemi)
         self.message_degats_surface = None
         self.message_pv_surface = None
