@@ -37,6 +37,9 @@ class CombatGraphique:
         self.police = pygame.font.Font('pokemon.ttf', 17)
         self.tour = 0
 
+        self.message_capturer_surface = self.police.render("Cliquer ici pour capturer le Pokémon", True, self.blanc)
+        self.position_message_capturer = (100, 350)  # Position du texte à ajuster selon votre mise en page
+
     def afficher_interface(self):
         pygame.display.set_caption("Combat Pokémon")
         # Charger l'image du fond
@@ -50,13 +53,27 @@ class CombatGraphique:
                     pygame.quit()
                     sys.exit()
                 elif event.type == MOUSEBUTTONDOWN:
-                    self.combat.jouer_tour()
+                    x, y = pygame.mouse.get_pos()
+                    if self.position_message_capturer[0] <= x <= self.position_message_capturer[0] + self.message_capturer_surface.get_width() and \
+                        self.position_message_capturer[1] <= y <= self.position_message_capturer[1] + self.message_capturer_surface.get_height():
+                        # Capturer le Pokémon et afficher le résultat
+                        resultat_capturer = self.combat.capturer_pokemon() 
+                        self.position_message_capturer = (30, 150) 
+                        self.message_capturer_surface = self.police.render(resultat_capturer, True, self.orange)
+                        self.fenetre.blit(self.message_capturer_surface, self.position_message_capturer)  # Afficher le résultat de la capture
+                        pygame.display.flip()
+                        
+                        self.combat.fin_tour()
+                        self.position_message_capturer = (100, 350)
+                    else:
+                        self.combat.jouer_tour()
 
             self.fenetre.blit(self.fond, (0, 0))
             self.afficher_barres_vie()
             self.afficher_noms_pokemon()
             self.afficher_pvs()
             self.afficher_images_pokemons()
+            self.fenetre.blit(self.message_capturer_surface, self.position_message_capturer)
 
             if self.message_degats_surface:
                 self.fenetre.blit(self.message_degats_surface, (100, 370))

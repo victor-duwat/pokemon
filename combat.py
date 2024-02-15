@@ -87,9 +87,25 @@ class Combat:
         else:
             self.tour = 1 - self.tour  # Changer de tour entre 0 et 1
 
+    def capturer_pokemon(self):
+        # Calculer la probabilité de capture en fonction des points de vie restants de l'ennemi
+        pourcentage_vie_restante = self.pokemon_ennemi.pv / self.pokemon_ennemi.pv_max
+        # La probabilité de base de capture peut être ajustée selon votre préférence
+        probabilite_base_capture = 60  # Par exemple, 20%
+        probabilite_capture = probabilite_base_capture + (1 - pourcentage_vie_restante) * 30
+
+        # Générer un nombre aléatoire entre 1 et 100 pour déterminer si la capture réussit
+        chance_capture = random.randint(1, 100)
+
+        # Si le nombre aléatoire est inférieur ou égal à la probabilité de capture, la capture réussit
+        if chance_capture <= probabilite_capture:
+            return f"Capture réussie ! Vous avez capturé {self.pokemon_ennemi.nom}."
+        else:
+            return f"Capture de {self.pokemon_ennemi.nom} échoué, le pokémon s'est échappé."
 
     def fin_tour(self):
             from jeu import Jeu
+            pygame.time.delay(2000)
             jeu_instance = Jeu(starter_choisi=self.pokemon_joueur)
             jeu_instance.run()
 
